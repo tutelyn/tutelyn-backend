@@ -14,6 +14,10 @@ const Subject = sequelize.define('subject', {
         allowNull: false,
         unique: true,
     },
+    class: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    }
 
 }, {
 
