@@ -20,6 +20,7 @@ router.post("/student-details", tokenAuthentication, (req, res) => {
     let currentClass = req.body.currentClass;
     let subjects = req.body.subjects;
     let stream = req.body.stream;
+    let subjectsIdString = req.body.subjectsIdString;
 
 
     StudentDetails.create({
@@ -36,6 +37,7 @@ router.post("/student-details", tokenAuthentication, (req, res) => {
         subjects: subjects,
         studentId: req.user.id,
         stream: stream,
+        subjectsIdString: subjectsIdString,
     })
         .then((result) => {
             console.log("Teacher details entered");
