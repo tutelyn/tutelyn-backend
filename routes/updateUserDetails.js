@@ -68,6 +68,7 @@ router.post("/teacher-details", tokenAuthentication, (req, res) => {
     let profileImage = req.body.profileImage;
     let qualification = req.body.qualification;
     let aaddharNo = req.body.aaddharNo;
+    let subjectsIdString = req.body.subjectsIdString;
 
     TeacherDetails.create({
         firstName: firstName,
@@ -77,6 +78,7 @@ router.post("/teacher-details", tokenAuthentication, (req, res) => {
         yearOfExp: yearOfExp,
         specification: specification,
         subjects: subjects,
+        subjectsIdString: subjectsIdString,
         latitude: latitude,
         longitude: longitude,
         pinCode: pinCode,
