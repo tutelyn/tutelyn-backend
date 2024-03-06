@@ -33,7 +33,7 @@ const TeacherDetails = sequelize.define('teacherdetails', {
         allowNull: false,
     },
     subjects: {
-        type: DataTypes.ARRAY(DataTypes.JSONB)
+        type: DataTypes.ARRAY(DataTypes.TEXT)
     },
     subjectsIdString: {
         type: DataTypes.TEXT,
