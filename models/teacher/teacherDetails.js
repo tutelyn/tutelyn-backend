@@ -33,8 +33,11 @@ const TeacherDetails = sequelize.define('teacherdetails', {
         allowNull: false,
     },
     subjects: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        allowNull: false,
+        type: DataTypes.ARRAY(DataTypes.JSONB)
+    },
+    subjectsIdString: {
+        type: DataTypes.TEXT,
+        allowNull: true,
     },
     latitude: {
         type: DataTypes.DECIMAL(10, 8), // 10 total digits, 8 after the decimal point
