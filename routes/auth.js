@@ -155,9 +155,6 @@ router.post("/log-in", async (req, res) => {
         const type = req.body.type;
 
         if (type == 0) {
-
-
-
             if (email == null || email == undefined) {
                 let foundUser = await Student.findOne({ where: { userName: userName } });
                 if (foundUser != null) {
