@@ -1,4 +1,8 @@
 const router = require("express").Router();
+const { QueryTypes } = require('sequelize');
+const sequelize = require("../db/database")
+
+
 
 router.get("/get-teachers/:latitude/:longitude/:subjectIdString", async (req, res) => {
 
@@ -11,7 +15,7 @@ router.get("/get-teachers/:latitude/:longitude/:subjectIdString", async (req, re
     const subjectIdArray = subjectIdString.split(",");
     let subjectIDqueryString = "";
     for (let i = 0; i < subjectIdArray.length; i++) {
-        let temp = `${i > 0 ? " OR " : ""}subjectsIdString LIKE '%${subjectIdArray[i]}%'`
+        let temp = `${i > 0 ? " OR " : ""}"subjectsIdString" LIKE '%${subjectIdArray[i]}%'`
         subjectIDqueryString = subjectIDqueryString + temp;
     }
 
@@ -23,10 +27,14 @@ router.get("/get-teachers/:latitude/:longitude/:subjectIdString", async (req, re
         ST_MakePoint(latitude, longitude)::geography,
         ST_MakePoint(${latitude}, ${longitude})::geography, 
         10000
-    );`
+    )`
 
-    const finalQueryString = `SELECT * FROM (${subQueryString}) WHERE ${subjectIDqueryString}`
+    const finalQueryString = `SELECT * FROM (${subQueryString}) AS subquery_alias WHERE ${subjectIDqueryString}`
     console.log(finalQueryString);
+
+    let data = await sequelize.query(finalQueryString, { type: QueryTypes.SELECT });
+    console.log(data);
+
 
 
 

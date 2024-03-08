@@ -13,6 +13,7 @@ const Teacher = require('./models/teacher/teacher')
 const Student = require('./models/student/student')
 const StudentDetails = require("./models/student/studentDetails")
 const insertSubject = require("./models/subject/insertSubject")
+const insertTeachers = require("./models/teacher/insertTeacherDetailsDemo")
 // routes
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -66,8 +67,9 @@ Teacher.hasOne(TeacherDetails, { foreignKey: 'teacherId' })
 TeacherDetails.belongsTo(Teacher, { foreignKey: 'teacherId' })
 
 
-sequelize.sync({ force: true }).then((r) => {
-  insertSubject();
+sequelize.sync({ force: false }).then((r) => {
+  // insertSubject();
+  // insertTeachers();
   console.log("sync");
 }).catch((e) => {
   console.log("error1", e);
