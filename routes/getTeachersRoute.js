@@ -1,15 +1,16 @@
 const router = require("express").Router();
 const { QueryTypes } = require('sequelize');
-const sequelize = require("../db/database")
+const sequelize = require("../db/database");
 
 
 
-router.get("/get-teachers/:latitude/:longitude/:subjectIdString", async (req, res) => {
-
+router.post("/get-teachers/:latitude/:longitude/:subjectIdString/", async (req, res) => {
     const latitude = parseFloat(req.params.latitude);
     const longitude = parseFloat(req.params.longitude);
-    console.log("latitude : ", latitude);
-    console.log("longitude : ", longitude);
+
+    const offset = req.body.offset
+    const limit = req.body.limit
+
 
     const subjectIdString = req.params.subjectIdString;
     const subjectIdArray = subjectIdString.split(",");
@@ -29,13 +30,17 @@ router.get("/get-teachers/:latitude/:longitude/:subjectIdString", async (req, re
         10000
     )`
 
-    const finalQueryString = `SELECT * FROM (${subQueryString}) AS subquery_alias WHERE ${subjectIDqueryString}`
+    // const finalQueryString = `SELECT * FROM (${subQueryString}) AS subquery_alias WHERE ${subjectIDqueryString}`
+
+    const finalQueryString = `SELECT * FROM (${subQueryString}) AS subquery_alias WHERE ${subjectIDqueryString} OFFSET ${offset} LIMIT ${limit || 10}`
     console.log(finalQueryString);
 
     let data = await sequelize.query(finalQueryString, { type: QueryTypes.SELECT });
-    console.log(data);
+    // console.log(data, data.length);
+    let hasMore = true
+    if (!data.length) hasMore = false
 
-
+    return res.json({ status: data, hasMore });
 
 
 
