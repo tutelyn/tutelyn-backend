@@ -4,9 +4,10 @@ const sequelize = require("../db/database");
 
 
 
-router.post("/get-teachers/:latitude/:longitude/:subjectIdString/", async (req, res) => {
+router.post("/get-teachers/:latitude/:longitude/:subjectIdString/:distance?", async (req, res) => {
     const latitude = parseFloat(req.params.latitude);
     const longitude = parseFloat(req.params.longitude);
+    const distance = req.params.distance || '10000';
 
     const offset = req.body.offset
     const limit = req.body.limit
@@ -22,20 +23,21 @@ router.post("/get-teachers/:latitude/:longitude/:subjectIdString/", async (req, 
 
 
 
-    const subQueryString = `SELECT *
+    let subQueryString = `SELECT *
     FROM teacherdetails
     WHERE ST_DWithin(
         ST_MakePoint(latitude, longitude)::geography,
         ST_MakePoint(${latitude}, ${longitude})::geography, 
-        10000
+        ${distance}
     )`
 
     // const finalQueryString = `SELECT * FROM (${subQueryString}) AS subquery_alias WHERE ${subjectIDqueryString}`
 
-    const finalQueryString = `SELECT * FROM (${subQueryString}) AS subquery_alias WHERE ${subjectIDqueryString} OFFSET ${offset} LIMIT ${limit || 10}`
+    let finalQueryString = `SELECT * FROM (${subQueryString}) AS subquery_alias WHERE ${subjectIDqueryString} OFFSET ${offset} LIMIT ${limit || 10}`
     console.log(finalQueryString);
 
     let data = await sequelize.query(finalQueryString, { type: QueryTypes.SELECT });
+
     // console.log(data, data.length);
     let hasMore = true
     if (!data.length) hasMore = false
