@@ -5,6 +5,10 @@ const router = require("express").Router();
 
 router.post("/student-details", tokenAuthentication, addStudentDetails);
 router.post("/teacher-details", tokenAuthentication, addTeacherDetails);
+router.post("/update-student-details", tokenAuthentication, updateStudentDetails);
+router.post("/update-teacher-details", tokenAuthentication, updateTeacherDetails);
+
+
 
 async function addStudentDetails(req, res) {
     try {
@@ -94,6 +98,49 @@ async function addTeacherDetails(req, res) {
     } catch (error) {
         handleErrorResponse(res, error);
     }
+}
+
+async function updateStudentDetails(req, res) {
+
+    try {
+        let updateData = req.body.updates;
+        const FoundUser = await StudentDetails.findOne({ where: { studentId: req.user.id } })
+        if (FoundUser != null) {
+            FoundUser.set({ ...updateData });
+            await FoundUser.save();
+            return res.json({ status: true, message: "update successful" });
+
+        } else {
+            return res.json({ status: false, message: "Student not found" });
+        }
+
+    } catch (error) {
+
+        return res.json({ status: false, message: "Something Went wrong" });
+
+    }
+
+}
+async function updateTeacherDetails(req, res) {
+
+    try {
+        let updateData = req.body.updates;
+        const FoundUser = await TeacherDetails.findOne({ where: { studentId: req.user.id } })
+        if (FoundUser != null) {
+            FoundUser.set({ ...updateData });
+            await FoundUser.save();
+            return res.json({ status: true, message: "update successful" });
+
+        } else {
+            return res.json({ status: false, message: "Teacher not found" });
+        }
+
+    } catch (error) {
+
+        return res.json({ status: false, message: "Something Went wrong" });
+
+    }
+
 }
 
 function handleErrorResponse(res, error) {
