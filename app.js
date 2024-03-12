@@ -23,7 +23,7 @@ const authRouter = require('./routes/auth');
 const updateDetailsRouter = require('./routes/updateUserDetails');
 const TeacherDetails = require('./models/teacher/teacherDetails');
 const getTeacherRouter = require('./routes/getTeachersRoute');
-const insertCSVData = require('./models/city/insertCities');
+const getCitiesRouter = require("./routes/getCities")
 
 var app = express();
 app.use(function (req, res, next) {
@@ -46,6 +46,7 @@ app.use('/users', usersRouter);
 app.use('/update-details', updateDetailsRouter);
 app.use('/subjects', subjectRouter)
 app.use('/teacher', getTeacherRouter)
+app.use('/cities', getCitiesRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
