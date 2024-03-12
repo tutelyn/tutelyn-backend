@@ -22,7 +22,8 @@ const forgetpasswordRouter = require('./routes/otpGenerate')
 const authRouter = require('./routes/auth');
 const updateDetailsRouter = require('./routes/updateUserDetails');
 const TeacherDetails = require('./models/teacher/teacherDetails');
-const getTeacherRouter = require('./routes/getTeachersRoute')
+const getTeacherRouter = require('./routes/getTeachersRoute');
+const insertCSVData = require('./models/city/insertCities');
 
 var app = express();
 app.use(function (req, res, next) {
@@ -36,6 +37,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/csv', express.static(path.join(__dirname, 'csv')));
 
 app.use("/auth", authRouter);
 app.use('/', indexRouter);
@@ -70,6 +72,7 @@ TeacherDetails.belongsTo(Teacher, { foreignKey: 'teacherId' })
 sequelize.sync({ force: false }).then((r) => {
   // insertSubject();
   // insertTeachers();
+  // insertCSVData('./csv/cities.csv');
   console.log("sync");
 }).catch((e) => {
   console.log("error1", e);
