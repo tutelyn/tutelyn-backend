@@ -12,6 +12,7 @@ const sequelize = require("./db/database")
 const Teacher = require('./models/teacher/teacher')
 const Student = require('./models/student/student')
 const StudentDetails = require("./models/student/studentDetails")
+const TeacherDetails = require('./models/teacher/teacherDetails')
 const insertSubject = require("./models/subject/insertSubject")
 const insertTeachers = require("./models/teacher/insertTeacherDetailsDemo")
 // routes
@@ -21,9 +22,10 @@ const subjectRouter = require("./routes/getSubjects")
 const forgetpasswordRouter = require('./routes/otpGenerate')
 const authRouter = require('./routes/auth');
 const updateDetailsRouter = require('./routes/updateUserDetails');
-const TeacherDetails = require('./models/teacher/teacherDetails');
 const getTeacherRouter = require('./routes/getTeachersRoute');
 const insertCSVData = require('./models/city/insertCities');
+const TeacherClass = require('./models/teacherClass/teacherClass');
+const Batch = require('./models/batch/batch');
 
 var app = express();
 app.use(function (req, res, next) {
@@ -64,16 +66,19 @@ app.use(function (err, req, res) {
 });
 
 Student.hasOne(StudentDetails, { foreignKey: 'studentId' });
-StudentDetails.belongsTo(Student, { foreignKey: 'studentId' });
-Teacher.hasOne(TeacherDetails, { foreignKey: 'teacherId' })
-TeacherDetails.belongsTo(Teacher, { foreignKey: 'teacherId' })
+Teacher.hasOne(TeacherDetails, { foreignKey: 'teacherId' });
+Teacher.hasMany(TeacherClass, { foreignKey: 'teacherid' });
+TeacherClass.hasMany(Batch, { foreignKey: 'classid' });
 
 
-sequelize.sync({ force: false }).then((r) => {
+
+sequelize.sync({ force: true }).then((r) => {
   // insertSubject();
-  // insertTeachers();
+  insertTeachers();
   // insertCSVData('./csv/cities.csv');
   console.log("sync");
+
+
 }).catch((e) => {
   console.log("error1", e);
 })
