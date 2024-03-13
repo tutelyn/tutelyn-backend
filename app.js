@@ -73,8 +73,8 @@ TeacherClass.hasMany(Batch, { foreignKey: 'classid' });
 
 
 sequelize.sync({ force: true }).then((r) => {
-  // insertSubject();
-  insertTeachers();
+  insertSubject();
+  // insertTeachers();
   // insertCSVData('./csv/cities.csv');
   console.log("sync");
 

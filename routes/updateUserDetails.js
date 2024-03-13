@@ -1,6 +1,7 @@
 const StudentDetails = require("../models/student/studentDetails");
 const TeacherDetails = require("../models/teacher/teacherDetails");
 const tokenAuthentication = require("../middleware/tokenAuthentication");
+const TeacherClass = require("../models/teacherClass/teacherClass");
 const router = require("express").Router();
 
 router.post("/student-details", tokenAuthentication, addStudentDetails);
@@ -92,7 +93,15 @@ async function addTeacherDetails(req, res) {
             subjectsIdString
         };
 
+        let classes = []
+        for (let i = 0; i < subjects.length; i++) {
+            classes.push({ class: JSON.parse(decodeURI(subjects[i])).class, teacherid:req.user.id })
+        }
+
+        console.log(classes)
+
         await TeacherDetails.create(teacherDetails);
+        await TeacherClass.bulkCreate(classes)
         console.log("Teacher details entered");
         return res.json({ status: true, message: "Teacher details entered" });
     } catch (error) {
