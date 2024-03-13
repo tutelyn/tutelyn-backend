@@ -1,6 +1,4 @@
 const router = require("express").Router();
-const { where, Op, QueryTypes } = require("sequelize");
-const sequelize = require("../db/database");
 const City = require("../models/city/city");
 
 router.get("/get-city-list/:character", async (req, res) => {
