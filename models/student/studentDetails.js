@@ -78,6 +78,11 @@ const StudentDetails = sequelize.define('studentdetail', {
     allowNull: true,
 
   },
+  institute: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+
+  },
   studentId: {
     type: DataTypes.INTEGER,
     unique: true,

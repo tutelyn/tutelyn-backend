@@ -1,5 +1,8 @@
 const TeacherDetails = require("./teacherDetails")
 const Teacher = require("./teacher")
+const TeacherClass = require("../teacherClass/teacherClass");
+const Batch = require("../batch/batch");
+
 
 async function insertTeachers() {
     // for (let i = 0; i < 200; i++) {
@@ -23,7 +26,7 @@ async function insertTeachers() {
     //     });
     // }
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 20; i++) {
         await Teacher.create({ email: `joy${i}@email.com`, password: "dadjakldjakls$", userName: `joy${i}` });
         await TeacherDetails.create({
             firstName: `FirstName${i}`,
@@ -42,6 +45,9 @@ async function insertTeachers() {
             aaddharNo: `454545454545`, // Generating 12 digit Aadhar number
             teacherId: i + 1
         });
+
+        await TeacherClass.create({ teacherid: 1, class: 5 });
+        await Batch.create({ classid: (i + 1), subjects: ['eng'] })
     }
 }
 
