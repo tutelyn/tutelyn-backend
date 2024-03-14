@@ -71,6 +71,15 @@ Teacher.hasMany(TeacherClass, { foreignKey: 'teacherid' });
 TeacherClass.hasMany(Batch, { foreignKey: 'classid' });
 
 
+const Student_Batch = sequelize.define('student_batch', {
+  id: {
+    primaryKey: true,
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    autoIncrement: true
+  }
+});
+Student.belongsToMany(Batch, { through: Student_Batch });
 
 sequelize.sync({ force: true }).then((r) => {
   insertSubject();
