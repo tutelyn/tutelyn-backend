@@ -3,6 +3,8 @@ const TeacherDetails = require("../models/teacher/teacherDetails");
 const tokenAuthentication = require("../middleware/tokenAuthentication");
 const TeacherClass = require("../models/teacherClass/teacherClass");
 const router = require("express").Router();
+const { QueryTypes } = require('sequelize');
+const sequelize = require("../db/database");
 
 router.post("/student-details", tokenAuthentication, addStudentDetails);
 router.post("/teacher-details", tokenAuthentication, addTeacherDetails);
@@ -94,11 +96,35 @@ async function addTeacherDetails(req, res) {
         };
 
         let classes = []
+        let classIdArr = []
         for (let i = 0; i < subjects.length; i++) {
-            classes.push({ class: JSON.parse(decodeURI(subjects[i])).class, teacherid:req.user.id })
+            const classId = JSON.parse(decodeURI(subjects[i])).class
+            classes.push({ class: classId, teacherid: req.user.id })
+
+            const uniq = new Date().getTime().toString() + "_" + req.user.id.toString() + "_" + classId.toString()
+            classIdArr.push(uniq)
         }
 
-        console.log(classes)
+        console.log(classIdArr)
+
+        for (let i = 0; i < classIdArr.length; i++) {
+            const tableName = classIdArr[i]
+            let qString = `CREATE TABLE "${tableName}" (
+                id TEXT PRIMARY KEY,
+                class INTEGER,
+                batch_id_list TEXT[],
+                batch_name_list TEXT[],
+                teacher_id INTEGER
+            );`
+
+            console.log(typeof (classes[i].class), typeof (classes[i].teacherid))
+
+            let insertQuery = `INSERT INTO "${tableName}" VALUES (${tableName},${classes[i].class}, ARRAY[]::TEXT[], ARRAY[]::TEXT[], ${classes[i].teacherid})`
+
+            await sequelize.query(qString)
+            await sequelize.query(insertQuery, { type: QueryTypes.INSERT })
+        }
+
 
         await TeacherDetails.create(teacherDetails);
         await TeacherClass.bulkCreate(classes)

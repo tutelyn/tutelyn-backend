@@ -26,6 +26,7 @@ const getTeacherRouter = require('./routes/getTeachersRoute');
 const insertCSVData = require('./models/city/insertCities');
 const TeacherClass = require('./models/teacherClass/teacherClass');
 const Batch = require('./models/batch/batch');
+const Student_Batch = require('./models/batch/student_batch');
 
 var app = express();
 app.use(function (req, res, next) {
@@ -71,14 +72,7 @@ Teacher.hasMany(TeacherClass, { foreignKey: 'teacherid' });
 TeacherClass.hasMany(Batch, { foreignKey: 'classid' });
 
 
-const Student_Batch = sequelize.define('student_batch', {
-  id: {
-    primaryKey: true,
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    autoIncrement: true
-  }
-});
+
 Student.belongsToMany(Batch, { through: Student_Batch });
 
 sequelize.sync({ force: true }).then((r) => {
