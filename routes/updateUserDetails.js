@@ -76,6 +76,36 @@ async function addTeacherDetails(req, res) {
             subjectsIdString
         } = req.body;
 
+        let classes = []
+        let classIdArr = []
+        for (let i = 0; i < subjects.length; i++) {
+            const classId = JSON.parse(decodeURI(subjects[i])).class
+            classes.push({ class: classId, teacherid: req.user.id })
+
+            const uniq = new Date().getTime().toString() + "_" + req.user.id.toString() + "_" + classId.toString()
+            classIdArr.push(uniq)
+        }
+
+        console.log(classIdArr)
+
+        for (let i = 0; i < classIdArr.length; i++) {
+            const tableName = classIdArr[i]
+            let qString = `CREATE TABLE "${tableName}" (
+                id SERIAL PRIMARY KEY,
+                class INTEGER,
+                batch_id_list TEXT[],
+                batch_name_list TEXT[],
+                teacher_id INTEGER
+            );`
+
+            console.log(typeof (classes[i].class), typeof (classes[i].teacherid))
+
+            let insertQuery = `INSERT INTO "${tableName}" VALUES (1,${classes[i].class}, ARRAY[]::TEXT[], ARRAY[]::TEXT[], ${classes[i].teacherid})`
+
+            await sequelize.query(qString)
+            await sequelize.query(insertQuery, { type: QueryTypes.INSERT })
+        }
+
         const teacherDetails = {
             firstName,
             lastName,
@@ -92,38 +122,9 @@ async function addTeacherDetails(req, res) {
             qualification,
             aaddharNo,
             teacherId: req.user.id,
-            subjectsIdString
+            subjectsIdString,
+            class_id_array: classIdArr
         };
-
-        let classes = []
-        let classIdArr = []
-        for (let i = 0; i < subjects.length; i++) {
-            const classId = JSON.parse(decodeURI(subjects[i])).class
-            classes.push({ class: classId, teacherid: req.user.id })
-
-            const uniq = new Date().getTime().toString() + "_" + req.user.id.toString() + "_" + classId.toString()
-            classIdArr.push(uniq)
-        }
-
-        console.log(classIdArr)
-
-        for (let i = 0; i < classIdArr.length; i++) {
-            const tableName = classIdArr[i]
-            let qString = `CREATE TABLE "${tableName}" (
-                id TEXT PRIMARY KEY,
-                class INTEGER,
-                batch_id_list TEXT[],
-                batch_name_list TEXT[],
-                teacher_id INTEGER
-            );`
-
-            console.log(typeof (classes[i].class), typeof (classes[i].teacherid))
-
-            let insertQuery = `INSERT INTO "${tableName}" VALUES (${tableName},${classes[i].class}, ARRAY[]::TEXT[], ARRAY[]::TEXT[], ${classes[i].teacherid})`
-
-            await sequelize.query(qString)
-            await sequelize.query(insertQuery, { type: QueryTypes.INSERT })
-        }
 
 
         await TeacherDetails.create(teacherDetails);
