@@ -71,6 +71,10 @@ const TeacherDetails = sequelize.define('teacherdetails', {
         type: DataTypes.INTEGER,
         unique: true,
         allowNull: false
+    },
+    class_id_array: {
+        type: DataTypes.ARRAY(DataTypes.TEXT),
+        allowNull: true
     }
 })
 
