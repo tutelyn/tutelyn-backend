@@ -91,7 +91,7 @@ async function addTeacherDetails(req, res) {
         for (let i = 0; i < classIdArr.length; i++) {
             const tableName = classIdArr[i]
             let qString = `CREATE TABLE "${tableName}" (
-                id SERIAL PRIMARY KEY,
+                id VARCHAR(255) PRIMARY KEY,
                 class INTEGER,
                 batch_id_list TEXT[],
                 batch_name_list TEXT[],
@@ -100,7 +100,7 @@ async function addTeacherDetails(req, res) {
 
             console.log(typeof (classes[i].class), typeof (classes[i].teacherid))
 
-            let insertQuery = `INSERT INTO "${tableName}" VALUES (1,${classes[i].class}, ARRAY[]::TEXT[], ARRAY[]::TEXT[], ${classes[i].teacherid})`
+            let insertQuery = `INSERT INTO "${tableName}"(id, class, batch_id_list, batch_name_list, teacher_id) VALUES ('${tableName}',${classes[i].class}, ARRAY[]::TEXT[], ARRAY[]::TEXT[], ${classes[i].teacherid})`
 
             await sequelize.query(qString)
             await sequelize.query(insertQuery, { type: QueryTypes.INSERT })
