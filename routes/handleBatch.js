@@ -31,6 +31,7 @@ router.post("/create-batch", async (req, res) => {
             created_at TIMESTAMP,
             students INTEGER[],
             subjects TEXT[],
+            board VARCHAR(255),
             teacher_id INTEGER
         );`
 
@@ -47,16 +48,36 @@ router.post("/create-batch", async (req, res) => {
         return res.json({ status: false, message: "Something went wrong", error });
 
     }
+});
 
+router.put("/update-batch", async (req, res) => {
+    try {
+        const data = {
+            id: req.body.id,
+            name: req.body.batch_name,
+            desc: req.body.desc,
+            syllabus: req.body.syllabus,
+            class_id: req.body.class_id,
+            students: [],
+            subjects: req.body.subjects,
+            board: req.body.board
+        }
 
+        const updateQuery = `
+            UPDATE "${data.id}"
+            SET name = '${data.name}', description = '${data.desc}', syllabus ='${data.syllabus}', subjects ='{${data.subjects}}', students ='{${data.students}}', board ='${data.board}'
+            WHERE id = '${data.id}'
+        `;
 
+        await sequelize.query(updateQuery, { type: QueryTypes.UPDATE })
 
+        return res.json({ status: true, message: "Batch successfully created" });
 
+    } catch (error) {
+        console.log(error)
+        return res.json({ status: false, message: "Something went wrong", error });
 
-
-
-
-
+    }
 });
 
 module.exports = router;
