@@ -24,6 +24,7 @@ const authRouter = require('./routes/auth');
 const updateDetailsRouter = require('./routes/updateUserDetails');
 const getTeacherRouter = require('./routes/getTeachersRoute');
 const createBatch = require('./routes/handleBatch')
+const studentDetails = require('./routes/studentProfile')
 const insertCSVData = require('./models/city/insertCities');
 const TeacherClass = require('./models/teacherClass/teacherClass');
 const Batch = require('./models/batch/batch');
@@ -51,6 +52,8 @@ app.use('/update-details', updateDetailsRouter);
 app.use('/subjects', subjectRouter)
 app.use('/teacher', getTeacherRouter)
 app.use('/batch', createBatch)
+app.use('/student', studentDetails)
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
