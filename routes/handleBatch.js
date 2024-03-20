@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const { QueryTypes } = require('sequelize');
 const sequelize = require("../db/database");
+const tokenAuthentication = require("../middleware/tokenAuthentication");
 
 
 
@@ -79,5 +80,32 @@ router.put("/update-batch", async (req, res) => {
 
     }
 });
+
+router.put("/join-batch", tokenAuthentication, async (req, res) => {
+
+    try {
+        studentId = req.body.user.id;
+        batchTableID = req.body.id;
+
+        const updateQuery = `
+           UPDATE "${batchTableID}"
+           SET students = array_append(students, ${studentId})
+           WHERE id = '${batchTableID}'
+       `;
+
+        await sequelize.query(updateQuery, { type: QueryTypes.UPDATE })
+        return res.json({ status: true, message: "You are added to batch" });
+
+    } catch (error) {
+
+        return res.json({ status: false, message: "Something went wrong", error });
+
+    }
+
+
+
+
+
+})
 
 module.exports = router;
